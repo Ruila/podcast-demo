@@ -1,6 +1,6 @@
 <template>
-  <div class="flex my-4 shadow-md cursor-pointer">
-    <img class="w-[100px] h-[100px]" :src="props.imgUrl" alt="image" />
+  <div class="flex my-4 shadow-md cursor-pointer" @click="goToPodcastView">
+    <img class="w-[100px] h-[100px]" src="props.imgUrl" alt="image" />
     <div class="ml-4">
       <div class="text-[16px]">
         {{ props.title }}
@@ -14,8 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const props = defineProps({
+  id: String,
   title: String,
   publish_date: String,
   imgUrl: String,
@@ -23,8 +25,9 @@ const props = defineProps({
   summary: String,
   author: String,
 });
-onMounted(() => {
-  console.info("props", props);
-});
+
+function goToPodcastView(): void {
+  router.push({ name: "podcast", params: { id: props.id } });
+}
 </script>
 <style scoped></style>

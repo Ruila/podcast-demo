@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Channel from "@/components/ChannelComponent.vue";
+import Channel from "@/components/channel/ChannelComponent.vue";
 </script>
 
 <template>
   <div>
-    <Channel />
+    <channel />
   </div>
 </template>
