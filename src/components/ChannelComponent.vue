@@ -7,20 +7,14 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import type { Ref } from "@vue/reactivity";
-import { data } from "@/resource";
+import { getResource } from "@/utils/getResource";
 
 const name: Ref = ref("Mike");
 
 onMounted(() => {
-  console.info("hehehe", name);
   name.value = "kkokoko";
-  getData();
+  const data = getResource();
+  console.info("hehehe", data);
 });
-
-async function getData(): Promise<void> {
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(data, "text/xml");
-  console.info("xmaa", xmlDoc);
-}
 </script>
 <style scoped></style>

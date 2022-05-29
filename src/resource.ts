@@ -1,4 +1,4 @@
-export const data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:atom=\"http://www.w3.org/2005/Atom\" version=\"2.0\" xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" xmlns:googleplay=\"http://www.google.com/schemas/play-podcasts/1.0\" xmlns:soundon=\"http://soundon.fm/spec/podcast-1.0\"><channel><title><![CDATA[Gooaye 股癌]]></title><description><![CDATA[晦澀金融投資知識直白講，重要海內外時事輕鬆談；不管老司機還是菜雞，散戶們都進來取暖，也在這裡找到樂趣。\n" +
+export const resourceData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:atom=\"http://www.w3.org/2005/Atom\" version=\"2.0\" xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" xmlns:googleplay=\"http://www.google.com/schemas/play-podcasts/1.0\" xmlns:soundon=\"http://soundon.fm/spec/podcast-1.0\"><channel><title><![CDATA[Gooaye 股癌]]></title><description><![CDATA[晦澀金融投資知識直白講，重要海內外時事輕鬆談；不管老司機還是菜雞，散戶們都進來取暖，也在這裡找到樂趣。\n" +
     "\n" +
     "Facebook | Apple | Spotify | Youtube | Telegram\n" +
     "搜尋：Gooaye 股癌\n" +
