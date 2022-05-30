@@ -11,7 +11,7 @@ const router = createRouter({
     {
       path: "/podcast/:id",
       name: "podcast",
-      component: () => import("../views/PodcastView.vue"),
+      component: () => import("../views/PodcastDetailView.vue"),
     },
   ],
 });

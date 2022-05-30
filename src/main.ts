@@ -4,8 +4,9 @@ import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 import "@/style/global.css";
-
-const app = createApp(App);
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import "@/plugins/fontawesome";
+const app = createApp(App).component("font-awesome-icon", FontAwesomeIcon);
 
 app.use(createPinia());
 app.use(router);

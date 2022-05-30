@@ -33,6 +33,7 @@ const data: Ref = ref<ResourceDataItemType>({
 const resource = getResource();
 onMounted(() => {
   data.value = resource[route.params.id as string];
+  console.info("asa", data.value);
 });
 </script>
 <style scoped></style>
