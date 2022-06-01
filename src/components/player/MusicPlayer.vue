@@ -59,9 +59,9 @@ const resource = getResource();
 
 function initializePlayer() {
   audioRef.value = new Audio(resource[store.musicId].musicUrl);
-  audioRef.value.addEventListener("canplaythrough", canPlayHandler);
+  audioRef.value.addEventListener("loadeddata", canPlayHandler);
   audioRef.value.addEventListener("timeupdate", timeUpdateHandler);
-  audioRef.value.addEventListener("onended", endHandler);
+  audioRef.value.addEventListener("ended", endHandler);
 }
 
 function playerController() {
@@ -75,6 +75,7 @@ function playerController() {
 
 function canPlayHandler(): void {
   loaded.value = true;
+  console.info("canPlayHandlen", audioRef.value);
   totalTime.value = convertToTime(audioRef.value.duration);
   progressBarMaxValue.value = Math.trunc(audioRef.value.duration);
   if (autoPlay.value) {
@@ -99,12 +100,13 @@ function onInput(e: Event): void {
   currentTime.value = convertToTime(
     Number((e.target as HTMLInputElement).value)
   );
+  console.info("input", (e.target as HTMLInputElement).value);
 }
 
 function removeListener() {
-  audioRef.value.removeEventListener("canplaythrough", canPlayHandler);
+  audioRef.value.removeEventListener("loadeddata", canPlayHandler);
   audioRef.value.removeEventListener("timeupdate", timeUpdateHandler);
-  audioRef.value.removeEventListener("onended", endHandler);
+  audioRef.value.removeEventListener("ended", endHandler);
 }
 
 function changeMusic() {
@@ -122,6 +124,7 @@ function MouseDown(): void {
 }
 
 function MouseUp(): void {
+  console.info("MouseUp", recordCurrentTime.value);
   audioRef.value.currentTime = recordCurrentTime.value;
   dragging.value = false;
 }
