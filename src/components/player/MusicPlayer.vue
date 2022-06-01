@@ -3,30 +3,38 @@
     class="fixed bg-white bottom-0 flex border-solid border-t-2 h-[120px] w-full flex justify-center items-center"
   >
     <img
-      src="https://files.soundon.fm/1611952660711-11c4cb94-968c-43fe-804d-25830fbd0338.jpeg"
+      :src="resource[store.musicId].imgUrl"
       class="w-[80px] h-[80px] mr-4"
       alt="image"
     />
-    <div class="mr-4 cursor-pointer" @click="playerController">
-      <font-awesome-icon
-        v-if="!playing"
-        size="2x"
-        :icon="['fas', 'circle-play']"
-      />
-      <font-awesome-icon v-else size="2x" :icon="['fas', 'circle-pause']" />
+    <div>
+      <div class="flex">
+        <div class="mr-4">title:{{ resource[store.musicId].title }}</div>
+        <div>author: {{ resource[store.musicId].author }}</div>
+      </div>
+      <div class="flex mt-2">
+        <div class="mr-4 cursor-pointer" @click="playerController">
+          <font-awesome-icon
+            v-if="!playing"
+            size="2x"
+            :icon="['fas', 'circle-play']"
+          />
+          <font-awesome-icon v-else size="2x" :icon="['fas', 'circle-pause']" />
+        </div>
+        <div class="w-[50px] text-center">{{ currentTime }}</div>
+        <input
+          :value="progressBarValue"
+          @input="onInput"
+          @mousedown="MouseDown"
+          @mouseup="MouseUp"
+          class="mx-4 w-[600px] cursor-pointer"
+          type="range"
+          min="0"
+          :max="progressBarMaxValue"
+        />
+        <div class="w-[50px] text-center">{{ totalTime }}</div>
+      </div>
     </div>
-    <div class="w-[50px] text-center">{{ currentTime }}</div>
-    <input
-      :value="progressBarValue"
-      @input="onInput"
-      @mousedown="MouseDown"
-      @mouseup="MouseUp"
-      class="mx-4 w-[600px] cursor-pointer"
-      type="range"
-      min="0"
-      :max="progressBarMaxValue"
-    />
-    <div class="w-[50px] text-center">{{ totalTime }}</div>
   </div>
 </template>
 
@@ -41,12 +49,12 @@ const audioRef: Ref = ref<HTMLAudioElement>();
 const dragging: Ref = ref<boolean>(false);
 const playing: Ref = ref<boolean>(false);
 const loaded: Ref = ref<boolean>(false);
+const autoPlay: Ref = ref<boolean>(false);
 const progressBarValue: Ref = ref<number>(0);
 const progressBarMaxValue: Ref = ref<number>(0);
 const recordCurrentTime: Ref = ref<number>(0);
 const currentTime: Ref = ref<string>("00:00");
 const totalTime: Ref = ref<string>("00:00");
-const testSrc: Ref = ref<string>("00:00");
 const resource = getResource();
 function playerController() {
   if (!playing.value) {
@@ -61,6 +69,10 @@ function canPlayHandler(): void {
   loaded.value = true;
   totalTime.value = convertToTime(audioRef.value.duration);
   progressBarMaxValue.value = Math.trunc(audioRef.value.duration);
+  if (autoPlay.value) {
+    audioRef.value.play();
+    playing.value = true;
+  }
 }
 function timeUpdateHandler(e: Event): void {
   if (!dragging.value) {
@@ -91,15 +103,17 @@ function initializePlayer() {
   audioRef.value.addEventListener("timeupdate", timeUpdateHandler);
   console.info("audio", audioRef.value, resource[store.musicId].musicUrl);
 }
-watch(store.$state, (newValue) => {
-  console.info("watch", newValue, resource[newValue.musicId], newValue.musicId);
-  testSrc.value = "xxxxx";
+watch(store.$state, (value) => {
+  console.info("watch", value);
+  audioRef.value.pause();
+  playing.value = false;
+  autoPlay.value = true;
   initializePlayer();
 });
 onMounted(() => {
-  testSrc.value = resource["247"].musicUrl;
   initializePlayer();
 });
+
 onBeforeUnmount(() => {
   console.info("onBeforeUnmount");
   audioRef.value.removeEventListener("canplaythrough", canPlayHandler);
