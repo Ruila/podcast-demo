@@ -15,7 +15,7 @@
       />
       <font-awesome-icon v-else size="2x" :icon="['fas', 'circle-pause']" />
     </div>
-    <div>{{ currentTime }}</div>
+    <div class="w-[50px] text-center">{{ currentTime }}</div>
     <input
       :value="progressBarValue"
       @input="onInput"
@@ -26,28 +26,12 @@
       min="0"
       :max="progressBarMaxValue"
     />
-    <div>{{ totalTime }}</div>
-    <audio
-      ref="audioRef"
-      controls
-      @error="audioErrorHandler"
-      class="hidden"
-      @canplay="canPlayHandler"
-      @timeupdate="timeUpdateHandler"
-    >
-      <source
-        :src="`${
-          resource[store.musicId] ? resource[store.musicId].musicUrl : ''
-        }`"
-        type="audio/mpeg"
-      />
-      Error with source file!
-    </audio>
+    <div class="w-[50px] text-center">{{ totalTime }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import type { Ref } from "@vue/reactivity";
 import { convertToTime } from "@/utils/convertToTime";
 import { usePlayerStore } from "@/stores/playerStore";
@@ -62,6 +46,7 @@ const progressBarMaxValue: Ref = ref<number>(0);
 const recordCurrentTime: Ref = ref<number>(0);
 const currentTime: Ref = ref<string>("00:00");
 const totalTime: Ref = ref<string>("00:00");
+const testSrc: Ref = ref<string>("00:00");
 const resource = getResource();
 function playerController() {
   if (!playing.value) {
@@ -86,8 +71,12 @@ function timeUpdateHandler(e: Event): void {
   }
 }
 function onInput(e: Event): void {
-  console.info("onInput");
   recordCurrentTime.value = (e.target as HTMLInputElement).value;
+  if (!dragging.value) {
+    currentTime.value = convertToTime(
+      Number((e.target as HTMLInputElement).value)
+    );
+  }
 }
 function MouseDown(): void {
   dragging.value = true;
@@ -96,11 +85,25 @@ function MouseUp(): void {
   audioRef.value.currentTime = recordCurrentTime.value;
   dragging.value = false;
 }
-function audioErrorHandler(e) {
-  console.info("audioErrorHandlerxxxxxxx", e);
+function initializePlayer() {
+  audioRef.value = new Audio(resource[store.musicId].musicUrl);
+  audioRef.value.addEventListener("canplaythrough", canPlayHandler);
+  audioRef.value.addEventListener("timeupdate", timeUpdateHandler);
+  console.info("audio", audioRef.value, resource[store.musicId].musicUrl);
 }
 watch(store.$state, (newValue) => {
-  console.info("music", newValue);
+  console.info("watch", newValue, resource[newValue.musicId], newValue.musicId);
+  testSrc.value = "xxxxx";
+  initializePlayer();
+});
+onMounted(() => {
+  testSrc.value = resource["247"].musicUrl;
+  initializePlayer();
+});
+onBeforeUnmount(() => {
+  console.info("onBeforeUnmount");
+  audioRef.value.removeEventListener("canplaythrough", canPlayHandler);
+  audioRef.value.removeEventListener("timeupdate", timeUpdateHandler);
 });
 </script>
 <style scoped></style>
