@@ -56,6 +56,7 @@ const recordCurrentTime: Ref = ref<number>(0);
 const currentTime: Ref = ref<string>("00:00");
 const totalTime: Ref = ref<string>("00:00");
 const resource = getResource();
+
 function playerController() {
   if (!playing.value) {
     audioRef.value.play();
@@ -64,8 +65,8 @@ function playerController() {
   }
   playing.value = !playing.value;
 }
+
 function canPlayHandler(): void {
-  console.info("canPlayHandler");
   loaded.value = true;
   totalTime.value = convertToTime(audioRef.value.duration);
   progressBarMaxValue.value = Math.trunc(audioRef.value.duration);
@@ -90,32 +91,38 @@ function onInput(e: Event): void {
     );
   }
 }
+
+function changeMusic() {
+  audioRef.value.pause();
+  audioRef.value.removeEventListener("canplaythrough", canPlayHandler);
+  audioRef.value.removeEventListener("timeupdate", timeUpdateHandler);
+  currentTime.value = "00:00";
+  playing.value = false;
+  autoPlay.value = true;
+  initializePlayer();
+}
+watch(store.$state, changeMusic);
+
 function MouseDown(): void {
   dragging.value = true;
 }
+
 function MouseUp(): void {
   audioRef.value.currentTime = recordCurrentTime.value;
   dragging.value = false;
 }
+
 function initializePlayer() {
   audioRef.value = new Audio(resource[store.musicId].musicUrl);
   audioRef.value.addEventListener("canplaythrough", canPlayHandler);
   audioRef.value.addEventListener("timeupdate", timeUpdateHandler);
-  console.info("audio", audioRef.value, resource[store.musicId].musicUrl);
 }
-watch(store.$state, (value) => {
-  console.info("watch", value);
-  audioRef.value.pause();
-  playing.value = false;
-  autoPlay.value = true;
-  initializePlayer();
-});
+
 onMounted(() => {
   initializePlayer();
 });
 
 onBeforeUnmount(() => {
-  console.info("onBeforeUnmount");
   audioRef.value.removeEventListener("canplaythrough", canPlayHandler);
   audioRef.value.removeEventListener("timeupdate", timeUpdateHandler);
 });
