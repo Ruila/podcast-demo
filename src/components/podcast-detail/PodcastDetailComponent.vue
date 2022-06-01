@@ -5,7 +5,12 @@
         <img class="w-[150px] h-[150px] mr-8" :src="data.imgUrl" alt="image" />
         <div class="flex-1">
           <div class="text-[16px] font-bold">{{ data.title }}</div>
-          <div>PLAY</div>
+          <div
+            @click="store.togglePlay()"
+            class="text-center rounded w-[60px] border-[#0aa1ff] border-2 text-[#0aa1ff] text-[12px] mt-4 cursor-pointer hover:text-white hover:bg-[#0aa1ff]"
+          >
+            {{ store.playing ? "PAUSE" : "PLAY" }}
+          </div>
         </div>
       </div>
       <div class="text-[18px] my-8">Episode Description</div>
@@ -20,8 +25,10 @@ import { getResource } from "@/utils/getResource";
 import { useRoute } from "vue-router";
 import type { Ref } from "@vue/reactivity";
 import type { ResourceDataItemType } from "@/types/ResourceDataItemType";
+import { usePlayerStore } from "@/stores/playerStore";
 
 const route = useRoute();
+const store = usePlayerStore();
 const data: Ref = ref<ResourceDataItemType>({
   title: "",
   publish_date: "",

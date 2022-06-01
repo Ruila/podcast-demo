@@ -1,15 +1,15 @@
 <template>
   <div
-    class="fixed bg-white bottom-0 flex border-solid border-t-2 cursor-pointer h-[120px] w-full flex justify-center items-center"
+    class="fixed bg-white bottom-0 flex border-solid border-t-2 h-[120px] w-full flex justify-center items-center"
   >
     <img
       src="https://files.soundon.fm/1611952660711-11c4cb94-968c-43fe-804d-25830fbd0338.jpeg"
       class="w-[80px] h-[80px] mr-4"
       alt="image"
     />
-    <div class="mr-4" @click="togglePlay">
+    <div class="mr-4 cursor-pointer" @click="store.togglePlay()">
       <font-awesome-icon
-        v-if="!playing"
+        v-if="!store.playing"
         size="2x"
         :icon="['fas', 'circle-play']"
       />
@@ -21,7 +21,7 @@
       @input="onInput"
       @mousedown="MouseDown"
       @mouseup="MouseUp"
-      class="mx-4 w-[600px]"
+      class="mx-4 w-[600px] cursor-pointer"
       type="range"
       min="0"
       :max="progressBarMaxValue"
@@ -43,33 +43,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import type { Ref } from "@vue/reactivity";
 import { convertToTime } from "@/utils/convertToTime";
-const props = defineProps({
-  id: String,
-  title: String,
-  publish_date: String,
-  imgUrl: String,
-  musicUrl: String,
-  summary: String,
-  author: String,
-});
+import { usePlayerStore } from "@/stores/playerStore";
+const store = usePlayerStore();
 const audioRef: Ref = ref<HTMLAudioElement>();
-const playing: Ref = ref<boolean>(false);
 const dragging: Ref = ref<boolean>(false);
 const progressBarValue: Ref = ref<number>(0);
 const progressBarMaxValue: Ref = ref<number>(0);
 const currentTime: Ref = ref<number>(0);
 const minTime: Ref = ref<string>("0:00");
 const maxTime: Ref = ref<string>("0:00");
-function togglePlay() {
-  if (playing.value) {
-    audioRef.value.pause();
-  } else {
+function playerController(status: boolean) {
+  if (status) {
     audioRef.value.play();
+  } else {
+    audioRef.value.pause();
   }
-  playing.value = !playing.value;
 }
 function canPlayHandler(): void {
   maxTime.value = convertToTime(audioRef.value.duration);
@@ -90,5 +81,8 @@ function MouseUp(): void {
   audioRef.value.currentTime = currentTime.value;
   dragging.value = false;
 }
+watch(store.$state, (newValue) => {
+  playerController(newValue.playing);
+});
 </script>
 <style scoped></style>
