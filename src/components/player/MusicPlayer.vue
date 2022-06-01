@@ -57,6 +57,13 @@ const currentTime: Ref = ref<string>("00:00");
 const totalTime: Ref = ref<string>("00:00");
 const resource = getResource();
 
+function initializePlayer() {
+  audioRef.value = new Audio(resource[store.musicId].musicUrl);
+  audioRef.value.addEventListener("canplaythrough", canPlayHandler);
+  audioRef.value.addEventListener("timeupdate", timeUpdateHandler);
+  audioRef.value.addEventListener("onended", endHandler);
+}
+
 function playerController() {
   if (!playing.value) {
     audioRef.value.play();
@@ -83,19 +90,26 @@ function timeUpdateHandler(e: Event): void {
     );
   }
 }
+function endHandler(e: Event): void {
+  console.info("ended", e);
+}
 function onInput(e: Event): void {
   recordCurrentTime.value = (e.target as HTMLInputElement).value;
-  if (!dragging.value) {
-    currentTime.value = convertToTime(
-      Number((e.target as HTMLInputElement).value)
-    );
-  }
+  progressBarValue.value = (e.target as HTMLInputElement).value;
+  currentTime.value = convertToTime(
+    Number((e.target as HTMLInputElement).value)
+  );
+}
+
+function removeListener() {
+  audioRef.value.removeEventListener("canplaythrough", canPlayHandler);
+  audioRef.value.removeEventListener("timeupdate", timeUpdateHandler);
+  audioRef.value.removeEventListener("onended", endHandler);
 }
 
 function changeMusic() {
   audioRef.value.pause();
-  audioRef.value.removeEventListener("canplaythrough", canPlayHandler);
-  audioRef.value.removeEventListener("timeupdate", timeUpdateHandler);
+  removeListener();
   currentTime.value = "00:00";
   playing.value = false;
   autoPlay.value = true;
@@ -112,19 +126,12 @@ function MouseUp(): void {
   dragging.value = false;
 }
 
-function initializePlayer() {
-  audioRef.value = new Audio(resource[store.musicId].musicUrl);
-  audioRef.value.addEventListener("canplaythrough", canPlayHandler);
-  audioRef.value.addEventListener("timeupdate", timeUpdateHandler);
-}
-
 onMounted(() => {
   initializePlayer();
 });
 
 onBeforeUnmount(() => {
-  audioRef.value.removeEventListener("canplaythrough", canPlayHandler);
-  audioRef.value.removeEventListener("timeupdate", timeUpdateHandler);
+  removeListener();
 });
 </script>
 <style scoped></style>
