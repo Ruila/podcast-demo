@@ -4,13 +4,15 @@ export const usePlayerStore = defineStore({
   id: "playerStore",
   state: () => ({
     playing: false,
+    musicId: "247",
   }),
-  getters: {
-    currentState: (state) => state.playing,
-  },
+  getters: {},
   actions: {
-    togglePlay() {
+    playMusic() {
       this.playing = !this.playing;
+    },
+    setMusicId(id: string) {
+      this.musicId = id;
     },
   },
 });

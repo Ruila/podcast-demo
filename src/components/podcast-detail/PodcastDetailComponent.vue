@@ -6,7 +6,7 @@
         <div class="flex-1">
           <div class="text-[16px] font-bold">{{ data.title }}</div>
           <div
-            @click="store.togglePlay()"
+            @click="playMusic"
             class="text-center rounded w-[60px] border-[#0aa1ff] border-2 text-[#0aa1ff] text-[12px] mt-4 cursor-pointer hover:text-white hover:bg-[#0aa1ff]"
           >
             {{ store.playing ? "PAUSE" : "PLAY" }}
@@ -38,9 +38,12 @@ const data: Ref = ref<ResourceDataItemType>({
   author: "",
 });
 const resource = getResource();
+function playMusic(): void {
+  store.setMusicId(route.params.id as string);
+  store.playMusic();
+}
 onMounted(() => {
   data.value = resource[route.params.id as string];
-  console.info("asa", data.value);
 });
 </script>
 <style scoped></style>

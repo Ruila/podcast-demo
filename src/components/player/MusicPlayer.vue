@@ -7,15 +7,15 @@
       class="w-[80px] h-[80px] mr-4"
       alt="image"
     />
-    <div class="mr-4 cursor-pointer" @click="store.togglePlay()">
+    <div class="mr-4 cursor-pointer" @click="playerController">
       <font-awesome-icon
-        v-if="!store.playing"
+        v-if="!playing"
         size="2x"
         :icon="['fas', 'circle-play']"
       />
       <font-awesome-icon v-else size="2x" :icon="['fas', 'circle-pause']" />
     </div>
-    <div>{{ minTime }}</div>
+    <div>{{ currentTime }}</div>
     <input
       :value="progressBarValue"
       @input="onInput"
@@ -26,18 +26,22 @@
       min="0"
       :max="progressBarMaxValue"
     />
-    <div>{{ maxTime }}</div>
+    <div>{{ totalTime }}</div>
     <audio
       ref="audioRef"
       controls
+      @error="audioErrorHandler"
       class="hidden"
       @canplay="canPlayHandler"
       @timeupdate="timeUpdateHandler"
     >
       <source
-        src="https://chtbl.com/track/4B4E1D/rss.soundon.fm/rssf/954689a5-3096-43a4-a80b-7810b219cef3/feedurl/17dfa81b-b307-4ac6-aeef-9ac624c41549/rssFileVip.mp3?timestamp=1653732572150"
+        :src="`${
+          resource[store.musicId] ? resource[store.musicId].musicUrl : ''
+        }`"
         type="audio/mpeg"
       />
+      Error with source file!
     </audio>
   </div>
 </template>
@@ -47,42 +51,56 @@ import { ref, watch } from "vue";
 import type { Ref } from "@vue/reactivity";
 import { convertToTime } from "@/utils/convertToTime";
 import { usePlayerStore } from "@/stores/playerStore";
+import { getResource } from "@/utils/getResource";
 const store = usePlayerStore();
 const audioRef: Ref = ref<HTMLAudioElement>();
 const dragging: Ref = ref<boolean>(false);
+const playing: Ref = ref<boolean>(false);
+const loaded: Ref = ref<boolean>(false);
 const progressBarValue: Ref = ref<number>(0);
 const progressBarMaxValue: Ref = ref<number>(0);
-const currentTime: Ref = ref<number>(0);
-const minTime: Ref = ref<string>("0:00");
-const maxTime: Ref = ref<string>("0:00");
-function playerController(status: boolean) {
-  if (status) {
+const recordCurrentTime: Ref = ref<number>(0);
+const currentTime: Ref = ref<string>("00:00");
+const totalTime: Ref = ref<string>("00:00");
+const resource = getResource();
+function playerController() {
+  if (!playing.value) {
     audioRef.value.play();
   } else {
     audioRef.value.pause();
   }
+  playing.value = !playing.value;
 }
 function canPlayHandler(): void {
-  maxTime.value = convertToTime(audioRef.value.duration);
+  console.info("canPlayHandler");
+  loaded.value = true;
+  totalTime.value = convertToTime(audioRef.value.duration);
   progressBarMaxValue.value = Math.trunc(audioRef.value.duration);
 }
 function timeUpdateHandler(e: Event): void {
   if (!dragging.value) {
     progressBarValue.value = (e.target as HTMLAudioElement).currentTime;
+    currentTime.value = convertToTime(
+      (e.target as HTMLAudioElement).currentTime
+    );
   }
 }
 function onInput(e: Event): void {
-  currentTime.value = (e.target as HTMLInputElement).value;
+  console.info("onInput");
+  recordCurrentTime.value = (e.target as HTMLInputElement).value;
 }
 function MouseDown(): void {
   dragging.value = true;
 }
 function MouseUp(): void {
-  audioRef.value.currentTime = currentTime.value;
+  audioRef.value.currentTime = recordCurrentTime.value;
   dragging.value = false;
 }
+function audioErrorHandler(e) {
+  console.info("audioErrorHandlerxxxxxxx", e);
+}
 watch(store.$state, (newValue) => {
-  playerController(newValue.playing);
+  console.info("music", newValue);
 });
 </script>
 <style scoped></style>
