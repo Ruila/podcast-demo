@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center">
-    <div class="w-[768px]">
+    <div class="w-[768px] mb-[150px]">
       <template v-for="item in podcastList" :key="item">
         <podcast-card
           :id="item"

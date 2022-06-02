@@ -91,8 +91,11 @@ function timeUpdateHandler(e: Event): void {
     );
   }
 }
-function endHandler(e: Event): void {
-  console.info("ended", e);
+function endHandler(): void {
+  playing.value = false;
+  if (resource[store.musicId + 1]) {
+    store.setMusicId(store.musicId + 1);
+  }
 }
 function onInput(e: Event): void {
   recordCurrentTime.value = (e.target as HTMLInputElement).value;
@@ -100,7 +103,6 @@ function onInput(e: Event): void {
   currentTime.value = convertToTime(
     Number((e.target as HTMLInputElement).value)
   );
-  console.info("input", (e.target as HTMLInputElement).value);
 }
 
 function removeListener() {
@@ -124,7 +126,6 @@ function MouseDown(): void {
 }
 
 function MouseUp(): void {
-  console.info("MouseUp", recordCurrentTime.value);
   audioRef.value.currentTime = recordCurrentTime.value;
   dragging.value = false;
 }

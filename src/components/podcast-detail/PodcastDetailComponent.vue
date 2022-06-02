@@ -39,7 +39,7 @@ const data: Ref = ref<ResourceDataItemType>({
 });
 const resource = getResource();
 function playMusic(): void {
-  store.setMusicId(route.params.id as string);
+  store.setMusicId(Number(route.params.id));
 }
 onMounted(() => {
   data.value = resource[route.params.id as string];
