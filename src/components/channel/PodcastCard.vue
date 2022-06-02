@@ -1,6 +1,6 @@
 <template>
   <div class="flex my-4 shadow-md cursor-pointer" @click="goToPodcastView">
-    <img class="w-[100px] h-[100px]" src="props.imgUrl" alt="image" />
+    <img class="w-[100px] h-[100px]" :src="props.imgUrl" alt="image" />
     <div class="ml-4">
       <div class="text-[16px]">
         {{ props.title }}
