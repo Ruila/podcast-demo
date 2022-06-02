@@ -6,7 +6,7 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "podcast-demo-vue",
+  base: process.env.NODE_ENV === "production" ? "/<REPO>/" : "./",
   plugins: [vue(), vueJsx()],
   resolve: {
     alias: {
