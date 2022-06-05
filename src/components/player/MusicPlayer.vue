@@ -3,14 +3,14 @@
     class="fixed bg-white bottom-0 flex border-solid border-t-2 h-[120px] w-full flex justify-center items-center"
   >
     <img
-      :src="resource[musicId].imgUrl"
+      :src="store.resource[store.musicId].imgUrl"
       class="w-[80px] h-[80px] mr-4"
       alt="image"
     />
     <div>
       <div class="flex">
-        <div class="mr-4">title:{{ resource[musicId].title }}</div>
-        <div>author: {{ resource[musicId].author }}</div>
+        <div class="mr-4">title:{{ store.resource[store.musicId].title }}</div>
+        <div>author: {{ store.resource[store.musicId].author }}</div>
       </div>
       <div class="flex mt-2">
         <div class="mr-4 cursor-pointer" @click="playerController">
@@ -43,7 +43,7 @@ import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import type { Ref } from "@vue/reactivity";
 import { convertToTime } from "@/utils/convertToTime";
 import { usePlayerStore } from "@/stores/playerStore";
-const { resource, musicId, setMusicId, $state } = usePlayerStore();
+const store = usePlayerStore();
 const audioRef: Ref = ref<HTMLAudioElement>();
 const dragging: Ref = ref<boolean>(false);
 const playing: Ref = ref<boolean>(false);
@@ -56,7 +56,7 @@ const currentTime: Ref = ref<string>("00:00");
 const totalTime: Ref = ref<string>("00:00");
 
 function initializePlayer() {
-  audioRef.value = new Audio(resource[musicId].musicUrl);
+  audioRef.value = new Audio(store.resource[store.musicId].musicUrl);
   audioRef.value.addEventListener("loadeddata", canPlayHandler);
   audioRef.value.addEventListener("timeupdate", timeUpdateHandler);
   audioRef.value.addEventListener("ended", endHandler);
@@ -73,7 +73,6 @@ function playerController() {
 
 function canPlayHandler(): void {
   loaded.value = true;
-  console.info("canPlayHandlen", audioRef.value);
   totalTime.value = convertToTime(audioRef.value.duration);
   progressBarMaxValue.value = Math.trunc(audioRef.value.duration);
   if (autoPlay.value) {
@@ -91,8 +90,8 @@ function timeUpdateHandler(e: Event): void {
 }
 function endHandler(): void {
   playing.value = false;
-  if (resource[musicId + 1]) {
-    setMusicId(musicId + 1);
+  if (store.resource[store.musicId + 1]) {
+    store.setMusicId(store.musicId + 1);
   }
 }
 function onInput(e: Event): void {
@@ -117,7 +116,7 @@ function changeMusic() {
   autoPlay.value = true;
   initializePlayer();
 }
-watch($state, changeMusic);
+watch(() => store.musicId, changeMusic);
 
 function MouseDown(): void {
   dragging.value = true;

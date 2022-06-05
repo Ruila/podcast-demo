@@ -1,0 +1,14 @@
+// Vitest Snapshot v1
+
+exports[`HelloWorld > renders properly 1`] = `
+<div
+  class="flex justify-center"
+>
+  <div
+    class="w-[768px] mb-[150px]"
+  >
+    
+    
+  </div>
+</div>
+`;

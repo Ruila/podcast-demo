@@ -8,6 +8,11 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 export default defineConfig({
   base: process.env.NODE_ENV === "production" ? "/podcast-demo/" : "./",
   plugins: [vue(), vueJsx()],
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./vitest-setup-file.js"],
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
