@@ -5,6 +5,8 @@
         <img class="w-[150px] h-[150px] mr-8" :src="data.imgUrl" alt="image" />
         <div class="flex-1">
           <div class="text-[16px] font-bold">{{ data.title }}</div>
+          <div class="text-[16px] font-bold">{{ data.author }}</div>
+          <div class="text-[16px] font-bold">{{ data.publish_date }}</div>
           <div
             @click="playMusic"
             class="text-center rounded w-[60px] border-[#0aa1ff] border-2 text-[#0aa1ff] text-[12px] mt-4 cursor-pointer hover:text-white hover:bg-[#0aa1ff]"
