@@ -19,7 +19,7 @@ export const getResource = (): ResourceDataType => {
       imgUrl: item
         .getElementsByTagName("itunes:image")[0]
         .getAttribute("href") as string,
-      musicUrl: items[0]
+      musicUrl: item
         .getElementsByTagName("enclosure")[0]
         .getAttribute("url") as string,
       summary: item.getElementsByTagName("itunes:summary")[0]
