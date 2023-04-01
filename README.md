@@ -5,3 +5,8 @@
 
 - yarn
 - yarn dev
+
+### Features
++ lazy loading on scroll
++ parsed xml
++ implemented music player
